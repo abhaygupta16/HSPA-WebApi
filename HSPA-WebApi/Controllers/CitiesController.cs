@@ -1,10 +1,10 @@
-﻿using HSPA_WebApi.Data;
+﻿
+using HSPA_WebApi.Data.Repo;
+using HSPA_WebApi.Interfaces;
 using HSPA_WebApi.Models;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using System.Threading.Tasks;
 
 namespace HSPA_WebApi.Controllers
@@ -13,41 +13,43 @@ namespace HSPA_WebApi.Controllers
     [ApiController]
     public class CitiesController : ControllerBase
     {
-        private readonly DataContext _context;
-        public CitiesController(DataContext context)
+        private readonly IUnitOfWork _uow;
+
+        public CitiesController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         [HttpGet]
-        public IActionResult GetAllCities()
+        public async Task<IActionResult> GetAllCities()
         {
-            var cities = _context.Cities.ToList();
+            //var cities = _context.Cities.ToList();
+            var cities =await _uow.CityRepository.GetAllCities();
             return Ok(cities);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetCityById(int id)
+        public async Task<IActionResult> GetCityById(int id)
         {
-            var city = _context.Cities.SingleOrDefault(c =>c.Id==id);
+            var city = await _uow.CityRepository.GetCityById(id);
             return Ok(city);
         }
 
         [HttpPost]
-        public IActionResult AddCity(City city)
+        public async Task<IActionResult> AddCity(City city)
         {
-            _context.Cities.Add(city);
-            _context.SaveChanges();
-            return Ok(city);
+            _uow.CityRepository.AddCity(city);
+            await _uow.SaveAsync();
+            //return Ok(city);
+            return StatusCode(201);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCity(int id)
+        public async Task<IActionResult> DeleteCity(int id)
         {
-            var city = _context.Cities.SingleOrDefault(c => c.Id == id);
-            _context.Cities.Remove(city);
-            _context.SaveChanges();
-            return Ok(id);
+            _uow.CityRepository.DeleteCity(id);
+            await _uow.SaveAsync();
+            return NoContent();
         }
     }
 }
