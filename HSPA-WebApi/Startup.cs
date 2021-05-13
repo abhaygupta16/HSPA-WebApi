@@ -1,6 +1,8 @@
+using HSPA_WebApi.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +26,9 @@ namespace HSPA_WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<DataContext>(options => options.UseSqlServer(
+                Configuration.GetConnectionString("Default")));
+            services.AddCors();
             services.AddControllers();
         }
 
@@ -36,6 +41,8 @@ namespace HSPA_WebApi
             }
 
             app.UseRouting();
+
+            app.UseCors(m => m.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             app.UseAuthorization();
 

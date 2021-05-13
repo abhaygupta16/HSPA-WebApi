@@ -5,3 +5,5 @@
 /.vs
 /HSPA-WebApi/.vs/HSPA-WebApi/v16
 /HSPA-WebApi/obj
+/HSPA-WebApi/.vs/HSPA-WebApi/config
+/HSPA-WebApi/bin/Debug/netcoreapp3.1
