@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
 using HSPA_WebApi.Interfaces;
+using HSPA_WebApi.Helpers;
 
 namespace HSPA_WebApi
 {
@@ -28,6 +29,8 @@ namespace HSPA_WebApi
             services.AddControllers().AddNewtonsoftJson(s => {
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
+
+            services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddCors();
