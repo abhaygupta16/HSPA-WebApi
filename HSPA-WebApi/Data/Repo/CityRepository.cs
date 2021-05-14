@@ -28,6 +28,11 @@ namespace HSPA_WebApi.Data.Repo
             _context.Cities.Remove(city);
         }
 
+        public async Task<City> FindCity(int cityId)
+        {
+            return await _context.Cities.FindAsync(cityId);
+        }
+
         public async Task<IEnumerable<City>> GetAllCities()
         {
             return await _context.Cities.ToListAsync();

@@ -10,11 +10,13 @@ namespace HSPA_WebApi.Interfaces
     {
         Task<IEnumerable<City>> GetAllCities();
 
-        Task<City> GetCityById(int cityId);
+       // Task<City> GetCityById(int cityId);
 
         void AddCity(City city);
 
         void DeleteCity(int cityId);
+
+        Task<City> FindCity(int cityId);
 
     }
 }

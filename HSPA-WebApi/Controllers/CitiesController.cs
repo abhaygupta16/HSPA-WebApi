@@ -4,7 +4,7 @@ using HSPA_WebApi.Data.Repo;
 using HSPA_WebApi.Dtos;
 using HSPA_WebApi.Interfaces;
 using HSPA_WebApi.Models;
-
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -36,7 +36,7 @@ namespace HSPA_WebApi.Controllers
             return Ok(cityDto);
         }
 
-        [HttpGet("{id}")]
+       /* [HttpGet("{id}")]
         public async Task<IActionResult> GetCityById(int id)
         {
             var city = await _uow.CityRepository.GetCityById(id);
@@ -44,6 +44,8 @@ namespace HSPA_WebApi.Controllers
 
             return Ok(cityDto);
         }
+       */
+
 
         [HttpPost]
         public async Task<IActionResult> AddCity(CityDto cityDto)
@@ -58,6 +60,7 @@ namespace HSPA_WebApi.Controllers
             return StatusCode(201);
         }
 
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCity(int id)
         {
@@ -65,5 +68,33 @@ namespace HSPA_WebApi.Controllers
             await _uow.SaveAsync();
             return NoContent();
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCity(int id,CityDto cityDto)
+        {
+            var cityFromDb =await _uow.CityRepository.FindCity(id);
+            cityFromDb.LastUpdatedBy = 1;
+            cityFromDb.LastUpdatedOn = DateTime.Now;
+
+            _mapper.Map(cityDto,cityFromDb);
+            await _uow.SaveAsync();
+            //return Ok(city);
+            return StatusCode(200);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchUpdateCity(int id, JsonPatchDocument<City> cityPatchDoc)
+        {
+            var cityFromDb = await _uow.CityRepository.FindCity(id);
+            cityFromDb.LastUpdatedBy = 1;
+            cityFromDb.LastUpdatedOn = DateTime.Now;
+
+            cityPatchDoc.ApplyTo(cityFromDb,ModelState);
+            await _uow.SaveAsync();
+            //return Ok(city);
+            return StatusCode(200);
+        }
+
+
     }
 }
